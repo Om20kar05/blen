@@ -103,13 +103,25 @@ app.use(errorHandler);
 // Connect to MongoDB and start server
 let server = null;
 
-export const startServer = async () => {
+export const startServer = async (port = PORT) => {
   await connectDB();
-  return new Promise((resolve) => {
-    server = app.listen(PORT, () => {
-      console.log(`[Server] BLEN Digital API server listening on http://localhost:${PORT}`);
-      resolve(server);
-    });
+  return new Promise((resolve, reject) => {
+    const tryListen = (p) => {
+      server = app.listen(p, '0.0.0.0', () => {
+        console.log(`[Server] BLEN Digital API server listening on http://0.0.0.0:${p}`);
+        resolve(server);
+      });
+      server.once('error', (err) => {
+        if ((err.code === 'EADDRINUSE' || err.code === 'EACCES') && p === 5000) {
+          console.warn(`[Server] Port 5000 is unavailable (${err.code}). Falling back to port 5001...`);
+          tryListen(5001);
+        } else {
+          console.error('[Server] Listen error:', err);
+          reject(err);
+        }
+      });
+    };
+    tryListen(port);
   });
 };
 

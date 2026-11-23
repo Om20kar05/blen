@@ -282,7 +282,7 @@ Open two terminal tabs:
 ```bash
 cd backend
 npm run dev
-# Server listening on http://localhost:5000
+# Server listening on http://localhost:5000 (with graceful auto-fallback to 5001 if port 5000 is busy on Windows)
 ```
 
 **Terminal 2 (Frontend Client)**:
@@ -296,11 +296,16 @@ npm run dev
 
 ## 9. Automated Testing
 
-The backend includes a comprehensive automated test suite testing 20 critical business workflows:
+The backend includes a comprehensive automated test suite testing critical business workflows:
 
 ```bash
 cd backend
+
+# Run standard test suite (20 tests)
 npm test
+
+# Run complete Senior QA verification suite (75 tests across all modules)
+npm run test:all
 ```
 
 ### Verified Test Suites:
