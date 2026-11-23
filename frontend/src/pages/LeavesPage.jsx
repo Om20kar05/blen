@@ -312,7 +312,8 @@ export const LeavesPage = () => {
             </TableHeader>
             <TableBody>
               {leaves.map((l) => {
-                const isOwner = l.employee?._id?.toString() === user?._id?.toString();
+                const empId = l.employee?._id ? l.employee._id.toString() : (l.employee ? l.employee.toString() : '');
+                const isOwner = empId === user?._id?.toString() || role === 'employee';
                 const canApprove =
                   ['admin', 'manager'].includes(role) &&
                   l.status === 'Pending' &&

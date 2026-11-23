@@ -37,8 +37,8 @@ export const LoginPage = () => {
     }
   };
 
-  // Direct login enabled ONLY for Admin
-  const handleAdminQuickLogin = (testEmail, testPassword) => {
+  // One-click quick login for test evaluation across all three roles
+  const handleQuickLogin = (testEmail, testPassword, roleName) => {
     setEmail(testEmail);
     setPassword(testPassword);
     setErrorMessage('');
@@ -46,7 +46,7 @@ export const LoginPage = () => {
       try {
         setIsLoading(true);
         const loggedInUser = await login(testEmail, testPassword);
-        toast.success(`Logged in as ADMIN: ${loggedInUser.name}`);
+        toast.success(`Logged in as ${roleName.toUpperCase()}: ${loggedInUser.name}`);
         navigate('/dashboard');
       } catch (err) {
         setErrorMessage(err.message);
@@ -54,14 +54,6 @@ export const LoginPage = () => {
         setIsLoading(false);
       }
     }, 100);
-  };
-
-  // Manager and Employee buttons do NOT directly log in; they only populate credentials
-  const handleFillCredentials = (testEmail, testPassword, roleName) => {
-    setEmail(testEmail);
-    setPassword(testPassword);
-    setErrorMessage('');
-    toast.info(`Filled ${roleName} credentials. Click "Sign In to Workspace" to log in.`);
   };
 
   return (
@@ -139,7 +131,7 @@ export const LoginPage = () => {
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
-                onClick={() => handleAdminQuickLogin('admin@blen.com', 'Admin@123')}
+                onClick={() => handleQuickLogin('admin@blen.com', 'Admin@123', 'Admin')}
                 className="flex flex-col items-center p-2.5 rounded-xl border border-purple-200 bg-purple-50/50 hover:bg-purple-100/70 transition-colors text-purple-900 group cursor-pointer"
               >
                 <ShieldCheck className="w-4 h-4 text-purple-600 mb-1" />
@@ -149,7 +141,7 @@ export const LoginPage = () => {
 
               <button
                 type="button"
-                onClick={() => handleFillCredentials('manager@blen.com', 'Manager@123', 'Manager')}
+                onClick={() => handleQuickLogin('manager@blen.com', 'Manager@123', 'Manager')}
                 className="flex flex-col items-center p-2.5 rounded-xl border border-blue-200 bg-blue-50/50 hover:bg-blue-100/70 transition-colors text-blue-900 group cursor-pointer"
               >
                 <Briefcase className="w-4 h-4 text-blue-600 mb-1" />
@@ -159,7 +151,7 @@ export const LoginPage = () => {
 
               <button
                 type="button"
-                onClick={() => handleFillCredentials('employee@blen.com', 'Employee@123', 'Employee')}
+                onClick={() => handleQuickLogin('employee@blen.com', 'Employee@123', 'Employee')}
                 className="flex flex-col items-center p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/70 transition-colors text-emerald-900 group cursor-pointer"
               >
                 <UserCheck className="w-4 h-4 text-emerald-600 mb-1" />

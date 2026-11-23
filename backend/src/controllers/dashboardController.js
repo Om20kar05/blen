@@ -182,7 +182,7 @@ export const getAdminDashboard = async (req, res, next) => {
       const dayAbsent = Math.max(0, activeEmployees - dayRecords.length);
 
       return {
-        date: format(new Date(d), 'MMM dd'),
+        date: format(new Date(d + 'T00:00:00'), 'MMM dd'),
         present: dayPresent,
         late: dayLate,
         halfDay: dayHalfDay,

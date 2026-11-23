@@ -3,6 +3,9 @@ import mongoose from 'mongoose';
 let mongoMemoryServerInstance = null;
 
 export const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    return;
+  }
   const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/blen_hr';
   
   try {
@@ -38,6 +41,7 @@ export const disconnectDB = async () => {
     await mongoose.disconnect();
     if (mongoMemoryServerInstance) {
       await mongoMemoryServerInstance.stop();
+      mongoMemoryServerInstance = null;
     }
     console.log('[Database] MongoDB disconnected cleanly.');
   } catch (err) {

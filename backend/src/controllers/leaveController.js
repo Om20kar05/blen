@@ -17,6 +17,10 @@ export const applyLeave = async (req, res, next) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return sendError(res, 'Invalid date format provided for start or end date', 400);
+    }
+
     // Business Rule 1: End date cannot precede start date
     if (end < start) {
       return sendError(res, 'End date cannot precede start date', 400);
@@ -150,6 +154,7 @@ export const getMyLeaves = async (req, res, next) => {
 
     const total = await LeaveRequest.countDocuments(query);
     const leaves = await LeaveRequest.find(query)
+      .populate('employee', 'name email designation department')
       .populate('leaveType', 'name code yearlyQuota isPaid')
       .populate('reviewedBy', 'name email')
       .sort({ createdAt: -1 })
@@ -227,10 +232,11 @@ export const getAllLeaves = async (req, res, next) => {
     // RBAC: Manager can only view leave requests of their assigned team
     if (req.user.role === 'manager') {
       const team = await User.find({ reportingManager: req.user._id }).select('_id');
-      const teamIds = team.map(t => t._id);
+      const teamIds = team.map(t => t._id.toString());
+      teamIds.push(req.user._id.toString());
 
       if (employeeId) {
-        if (!teamIds.some(id => id.toString() === employeeId.toString())) {
+        if (!teamIds.includes(employeeId.toString())) {
           return sendError(res, 'Access denied: Selected employee is not in your assigned team.', 403);
         }
         query.employee = employeeId;

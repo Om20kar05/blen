@@ -18,10 +18,11 @@ export const getEmployees = async (req, res, next) => {
     }
 
     if (search) {
+      const sanitized = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { designation: { $regex: search, $options: 'i' } }
+        { name: { $regex: sanitized, $options: 'i' } },
+        { email: { $regex: sanitized, $options: 'i' } },
+        { designation: { $regex: sanitized, $options: 'i' } }
       ];
     }
 
