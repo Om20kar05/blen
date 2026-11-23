@@ -1,7 +1,16 @@
 import axios from 'axios';
 
+const getBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  // If envUrl is the inactive onrender URL or not provided, route to same-origin /api
+  if (!envUrl || envUrl.includes('blen-hr-portal.onrender.com')) {
+    return '/api';
+  }
+  return envUrl;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: getBaseUrl(),
   headers: {
     'Content-Type': 'application/json'
   },
