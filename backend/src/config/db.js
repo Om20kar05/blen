@@ -6,7 +6,7 @@ export const connectDB = async () => {
   if (mongoose.connection.readyState === 1) {
     return;
   }
-  const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/blen_hr';
+  const uri = process.env.MONGODB_URI || 'mongodb+srv://gawaliomgmailcom:Omkar272005@omkar.03xqnr7.mongodb.net/blen_hr?retryWrites=true&w=majority';
   
   try {
     // Attempt standard connection first with a 3-second timeout

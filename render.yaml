@@ -4,13 +4,13 @@ services:
     runtime: node
     plan: free
     region: singapore
-    buildCommand: cd backend && npm install && cd ../frontend && npm install && npm run build
+    buildCommand: cd backend && npm install && npm run build --if-present
     startCommand: cd backend && npm start
     envVars:
       - key: NODE_ENV
         value: production
       - key: MONGODB_URI
-        sync: false
+        value: mongodb+srv://gawaliomgmailcom:Omkar272005@omkar.03xqnr7.mongodb.net/blen_hr?retryWrites=true&w=majority
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
