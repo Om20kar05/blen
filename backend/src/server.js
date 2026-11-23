@@ -3,9 +3,15 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 import { connectDB, disconnectDB } from './config/db.js';
 import routes from './routes/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load environment variables
 dotenv.config();
@@ -14,7 +20,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Security Middlewares
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 
 // CORS configuration
 const allowedOrigins = [
@@ -72,6 +78,16 @@ app.get('/api/health', (req, res) => {
 
 // Mount all API routes
 app.use('/api', routes);
+
+// Serve static frontend in production if built
+const frontendDist = path.resolve(__dirname, '../../frontend/dist');
+if (fs.existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.resolve(frontendDist, 'index.html'));
+  });
+}
 
 // 404 handler for undefined API routes
 app.use('/api/*', (req, res) => {
