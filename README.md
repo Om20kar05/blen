@@ -330,6 +330,7 @@ npm test
 ### Authentication (`/api/auth`)
 | Method | Endpoint | Access | Description |
 |---|---|---|---|
+| `POST` | `/api/auth/register` | Public | Register new user account with auto-allocated leave balances |
 | `POST` | `/api/auth/login` | Public | Authenticate user, set cookie, and return JWT |
 | `POST` | `/api/auth/logout` | Public | Clear session and cookies |
 | `GET` | `/api/auth/me` | Authenticated | Fetch current user profile with department and manager |
