@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Lock, Mail, Eye, EyeOff, ShieldCheck, Briefcase, UserCheck, AlertCircle } from 'lucide-react';
@@ -116,12 +116,19 @@ export const LoginPage = () => {
               type="submit"
               variant="primary"
               size="md"
-              className="w-full mt-2"
+              className="w-full mt-2 font-bold"
               isLoading={isLoading}
             >
               Sign In to Workspace
             </Button>
           </form>
+
+          <div className="mt-4 text-center text-xs text-slate-500">
+            Don't have an account?{' '}
+            <Link to="/register" className="font-bold text-brand-600 hover:text-brand-700 hover:underline">
+              Create / Register an Account
+            </Link>
+          </div>
 
           {/* Quick Demo Credentials Box */}
           <div className="mt-8 pt-6 border-t border-slate-100">
