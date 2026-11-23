@@ -169,10 +169,6 @@ export const LoginPage = () => {
             </div>
           </div>
         </div>
-
-        <p className="text-center text-xs text-slate-500 mt-6 font-medium">
-          BLEN DIGITAL Assessment Machine Test • Built with MERN Stack & RBAC
-        </p>
       </div>
     </div>
   );
