@@ -1,0 +1,25 @@
+{
+  "name": "blen-digital-hr-system",
+  "version": "1.0.0",
+  "description": "BLEN DIGITAL - Employee Leave & Attendance Management System (MERN Stack)",
+  "scripts": {
+    "start": "node backend/src/server.js",
+    "seed": "npm --prefix backend run seed",
+    "test": "npm --prefix backend test",
+    "build": "npm --prefix frontend run build",
+    "backend:dev": "npm --prefix backend run dev",
+    "frontend:dev": "npm --prefix frontend run dev"
+  },
+  "keywords": [
+    "mern",
+    "attendance-management",
+    "leave-management",
+    "rbac",
+    "mongodb",
+    "express",
+    "react",
+    "node"
+  ],
+  "author": "BLEN Candidate",
+  "license": "ISC"
+}
