@@ -33,7 +33,10 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+    
+    // Allow localhost, FRONTEND_URL, any Vercel domain, or non-production
+    const isVercel = /\.vercel\.app$/.test(new URL(origin).hostname);
+    if (allowedOrigins.indexOf(origin) !== -1 || isVercel || process.env.NODE_ENV !== 'production') {
       return callback(null, true);
     }
     return callback(new Error('CORS policy does not allow access from this origin.'));
@@ -73,6 +76,20 @@ app.get('/api/health', (req, res) => {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     service: 'BLEN HR Attendance & Leave API'
+  });
+});
+
+// Root API status endpoint
+app.get('/', (req, res, next) => {
+  const frontendDist = path.resolve(__dirname, '../../frontend/dist');
+  if (fs.existsSync(frontendDist)) {
+    return next();
+  }
+  res.status(200).json({
+    success: true,
+    service: 'BLEN DIGITAL HR SaaS Backend API',
+    status: 'online',
+    timestamp: new Date().toISOString()
   });
 });
 
