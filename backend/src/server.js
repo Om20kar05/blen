@@ -29,22 +29,36 @@ const allowedOrigins = [
   process.env.FRONTEND_URL
 ].filter(Boolean);
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, Postman)
     if (!origin) return callback(null, true);
-    
-    // Allow localhost, FRONTEND_URL, any Vercel domain, or non-production
-    const isVercel = /\.vercel\.app$/.test(new URL(origin).hostname);
-    if (allowedOrigins.indexOf(origin) !== -1 || isVercel || process.env.NODE_ENV !== 'production') {
-      return callback(null, true);
+
+    try {
+      const parsedUrl = new URL(origin);
+      const isAllowed =
+        allowedOrigins.includes(origin) ||
+        parsedUrl.hostname.endsWith('.vercel.app') ||
+        parsedUrl.hostname === 'localhost' ||
+        parsedUrl.hostname === '127.0.0.1' ||
+        process.env.NODE_ENV !== 'production';
+
+      if (isAllowed) {
+        return callback(null, true);
+      }
+      return callback(null, false);
+    } catch {
+      return callback(null, false);
     }
-    return callback(new Error('CORS policy does not allow access from this origin.'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Request parsers & logger
 app.use(express.json());
