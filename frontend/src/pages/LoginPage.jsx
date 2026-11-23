@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { Lock, Mail, Eye, EyeOff, ShieldCheck, Briefcase, UserCheck, AlertCircle } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, ShieldCheck, AlertCircle, Info } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const LoginPage = () => {
@@ -37,16 +37,16 @@ export const LoginPage = () => {
     }
   };
 
-  const handleQuickLogin = (testEmail, testPassword) => {
-    setEmail(testEmail);
-    setPassword(testPassword);
+  // Direct one-click login enabled strictly for Admin evaluator convenience
+  const handleAdminDirectLogin = () => {
+    setEmail('admin@blen.com');
+    setPassword('Admin@123');
     setErrorMessage('');
-    // Auto-login for interviewer convenience
     setTimeout(async () => {
       try {
         setIsLoading(true);
-        const loggedInUser = await login(testEmail, testPassword);
-        toast.success(`Logged in as ${loggedInUser.role.toUpperCase()}: ${loggedInUser.name}`);
+        const loggedInUser = await login('admin@blen.com', 'Admin@123');
+        toast.success(`Logged in as Administrator: ${loggedInUser.name}`);
         navigate('/dashboard');
       } catch (err) {
         setErrorMessage(err.message);
@@ -82,7 +82,7 @@ export const LoginPage = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Email Address"
+              label="Work Email"
               type="email"
               required
               placeholder="name@blen.com"
@@ -116,55 +116,58 @@ export const LoginPage = () => {
               type="submit"
               variant="primary"
               size="md"
-              className="w-full mt-2 font-bold"
+              className="w-full mt-2"
               isLoading={isLoading}
             >
               Sign In to Workspace
             </Button>
           </form>
 
-          <div className="mt-4 text-center text-xs text-slate-500">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-bold text-brand-600 hover:text-brand-700 hover:underline">
-              Create / Register an Account
-            </Link>
-          </div>
-
-          {/* Quick Demo Credentials Box */}
-          <div className="mt-8 pt-6 border-t border-slate-100">
+          {/* Quick Evaluator Access - Enabled ONLY for Admin */}
+          <div className="mt-7 pt-6 border-t border-slate-100">
             <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 text-center mb-3">
-              One-Click Evaluator Test Accounts
+              One-Click Evaluator Access (Admin Only)
             </p>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('admin@blen.com', 'Admin@123')}
-                className="flex flex-col items-center p-2.5 rounded-xl border border-purple-200 bg-purple-50/50 hover:bg-purple-100/70 transition-colors text-purple-900 group cursor-pointer"
-              >
-                <ShieldCheck className="w-4 h-4 text-purple-600 mb-1" />
-                <span className="text-xs font-bold">Admin</span>
-                <span className="text-[10px] text-purple-600 font-medium">Full Access</span>
-              </button>
 
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('manager@blen.com', 'Manager@123')}
-                className="flex flex-col items-center p-2.5 rounded-xl border border-blue-200 bg-blue-50/50 hover:bg-blue-100/70 transition-colors text-blue-900 group cursor-pointer"
-              >
-                <Briefcase className="w-4 h-4 text-blue-600 mb-1" />
-                <span className="text-xs font-bold">Manager</span>
-                <span className="text-[10px] text-blue-600 font-medium">Team Scope</span>
-              </button>
+            <button
+              type="button"
+              onClick={handleAdminDirectLogin}
+              className="w-full flex items-center justify-center gap-3 p-3 rounded-xl border border-purple-200 bg-purple-50/70 hover:bg-purple-100/90 transition-all text-purple-900 group cursor-pointer shadow-sm hover:shadow"
+            >
+              <div className="w-8 h-8 rounded-lg bg-purple-600 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <div className="text-left">
+                <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                  Direct Login as Administrator
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700 font-semibold border border-purple-200">
+                    Instant
+                  </span>
+                </div>
+                <span className="text-[11px] text-slate-500 font-medium block">
+                  admin@blen.com • Full admin privileges & controls
+                </span>
+              </div>
+            </button>
 
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('employee@blen.com', 'Employee@123')}
-                className="flex flex-col items-center p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/70 transition-colors text-emerald-900 group cursor-pointer"
-              >
-                <UserCheck className="w-4 h-4 text-emerald-600 mb-1" />
-                <span className="text-xs font-bold">Employee</span>
-                <span className="text-[10px] text-emerald-600 font-medium">Self Service</span>
-              </button>
+            {/* Note on Manager & Employee Accounts */}
+            <div className="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div className="flex items-start gap-2">
+                <Info className="w-4 h-4 text-slate-500 shrink-0 mt-0.5" />
+                <div className="text-[11px] text-slate-600 leading-relaxed">
+                  <span className="font-semibold text-slate-700">Manager & Employee Accounts:</span>{' '}
+                  All staff accounts are created by the Administrator inside the dashboard. To sign in as an employee or manager, enter their assigned credentials in the form above.
+                </div>
+              </div>
+
+              <div className="mt-2.5 pt-2 border-t border-slate-200/60 text-[10px] text-slate-500 flex justify-between items-center px-1">
+                <span>Default Manager: <code className="bg-slate-200/70 px-1 py-0.5 rounded text-slate-700">manager@blen.com</code></span>
+                <span>PW: <code className="bg-slate-200/70 px-1 py-0.5 rounded text-slate-700">Manager@123</code></span>
+              </div>
+              <div className="mt-1 text-[10px] text-slate-500 flex justify-between items-center px-1">
+                <span>Default Employee: <code className="bg-slate-200/70 px-1 py-0.5 rounded text-slate-700">employee@blen.com</code></span>
+                <span>PW: <code className="bg-slate-200/70 px-1 py-0.5 rounded text-slate-700">Employee@123</code></span>
+              </div>
             </div>
           </div>
         </div>
